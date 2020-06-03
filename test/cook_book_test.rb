@@ -32,7 +32,7 @@ class CookBookTest < MiniTest::Test
     assert_equal [@recipe1, @recipe2], @cookbook.recipes
   end
 
-  def test_highest_calorie_meal
+  def test_ingredients
     @recipe1.add_ingredient(@ingredient1, 2)
     @recipe1.add_ingredient(@ingredient2, 8)
     @recipe2.add_ingredient(@ingredient1, 2)
@@ -42,5 +42,15 @@ class CookBookTest < MiniTest::Test
     @cookbook.add_recipe(@recipe2)
     assert_equal ["Cheese", "Macaroni", "Ground Beef", "Bun"], @cookbook.ingredients
   end
+
+  def test_highest_calorie_meal
+    @recipe1.add_ingredient(@ingredient1, 2)
+    @recipe1.add_ingredient(@ingredient2, 8)
+    @recipe2.add_ingredient(@ingredient1, 2)
+    @recipe2.add_ingredient(@ingredient3, 4)
+    @recipe2.add_ingredient(@ingredient4, 1)
+    @cookbook.add_recipe(@recipe1)
+    @cookbook.add_recipe(@recipe2)
+    @cookbook.highest_calorie_meal
+  end
 end
-# @cookbook.highest_calorie_meal
