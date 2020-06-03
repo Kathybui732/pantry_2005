@@ -20,7 +20,12 @@ class CookBookTest < MiniTest::Test
 
 	def test_it_exists_with_attributes
 		assert_instance_of CookBook, @cookbook
-		assert_equal [], @cookbook.recipes
 	end
 
+  def test_recipies_starts_empty_until_added
+    assert_equal [], @cookbook.recipes
+    @cookbook.add_recipe(@recipe1)
+    @cookbook.add_recipe(@recipe2)
+    assert_equal [@recipe1, @recipe2], @cookbook.recipes
+  end
 end
