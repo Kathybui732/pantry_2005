@@ -16,6 +16,12 @@ class Recipe
     @ingredients_required.keys
   end
 
+  def ingredient_names
+    ingredients.map do |ingredient|
+      ingredient.name
+    end
+  end
+
   def total_calories
     @ingredients_required.reduce(0) do |acc, (ingredient, amount)|
       acc += (ingredient.calories * amount)

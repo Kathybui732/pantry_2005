@@ -1,3 +1,5 @@
+require "date"
+
 class CookBook
   attr_reader :recipes
               # :ingredients
@@ -15,11 +17,12 @@ class CookBook
     # This gives add_recipe 2 jobs whcih we don't want
   end
 
-  def ingredient_objects
-    @recipes.flat_map do |recipe|
-      recipe.ingredients
-    end
-  end
+  # could extract this to ingredients class because that is it's job
+  # def ingredient_objects
+  #   @recipes.flat_map do |recipe|
+  #     recipe.ingredients
+  #   end.uniq!
+  # end
 
   def ingredients
     # ingredients = []
@@ -30,11 +33,19 @@ class CookBook
     #   ingredients << ingredient.name unless ingredients.include?(ingredient.name)
     # end
     # ingredients
-    ingredient_objects.reduce([]) do |acc, ingredient|
-      acc << ingredient.name unless acc.include?(ingredient.name)
-      acc
-    end
 
+    # ingredient_objects.reduce([]) do |acc, ingredient|
+    #   acc << ingredient.name unless acc.include?(ingredient.name)
+    #   acc
+    # end
+
+    # ingredient_objects.map do |ingredient|
+    #   ingredient.name
+    # end
+
+    @recipes.flat_map do |recipe|
+      recipe.ingredient_names
+    end.uniq!
   end
 
   def highest_calorie_meal
@@ -43,18 +54,23 @@ class CookBook
     end
   end
 
+  def date
+    Date.today.strftime("%m-%d-%Y")
+  end
+
   def summary
-    hash_4 = Hash.new
-    array_3 = []
-    hash_2 = Hash.new { |hash, key| hash[key] =  }
-    array_1 = []
-    ingredient_objects.each do |ingredient|
-      hash_4[:ingredient] = ingredient.name
-      hash_4[:amount] = ingredient.calories.to_s + " " + ingredient.unit
-      array_3 << hash_4
+    @recipes.map do |recipe|
+      name = recipe.name
+      ingredients = recipe.ingredients_required.sort_by do |ingredient, amount|
+        ingredient.calories * amount
+      end.reverse.to_h
+      ingredients_1 = ingredients.map do |ingredient, amount|
+        {:ingredient => ingredient.name, :amount => "#{amount} #{ingredient.unit}"}
+      end
+      total_calories = recipe.total_calories
+      { :name => name,
+        :details => { :ingredients => ingredients_1,
+                    :total_calories => total_calories} }
     end
-    @reciepes.each do |recipe
-    end
-    #I was trying to build this backwards but it did not work lol
   end
 end

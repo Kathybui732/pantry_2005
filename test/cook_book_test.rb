@@ -1,5 +1,6 @@
 require "minitest/autorun"
 require "minitest/pride"
+require "mocha/minitest"
 require "./lib/cook_book"
 require "./lib/recipe"
 require "./lib/ingredient"
@@ -14,9 +15,6 @@ class CookBookTest < MiniTest::Test
     @ingredient4 = Ingredient.new({name: "Bun", unit: "g", calories: 75})
     @recipe1 = Recipe.new("Mac and Cheese")
     @recipe2 = Recipe.new("Cheese Burger")
-    @recipe1.add_ingredient(@ingredient1, 2)
-    @recipe1.add_ingredient(@ingredient1, 4)
-    @recipe1.add_ingredient(@ingredient2, 8)
     @cookbook = CookBook.new
     @pantry = Pantry.new
 	end
@@ -40,6 +38,7 @@ class CookBookTest < MiniTest::Test
     @recipe2.add_ingredient(@ingredient4, 1)
     @cookbook.add_recipe(@recipe1)
     @cookbook.add_recipe(@recipe2)
+		# assert_equal [@ingredient1, @ingredient2, @ingredient3, @ingredient4], @cookbook.ingredients
     assert_equal ["Cheese", "Macaroni", "Ground Beef", "Bun"], @cookbook.ingredients
   end
 
@@ -51,27 +50,28 @@ class CookBookTest < MiniTest::Test
     @recipe2.add_ingredient(@ingredient4, 1)
     @cookbook.add_recipe(@recipe1)
     @cookbook.add_recipe(@recipe2)
-    @cookbook.highest_calorie_meal
+    assert_equal @recipe2, @cookbook.highest_calorie_meal
   end
 
   def test_cook_book_date
-    skip
-    assert_equal "04-22-2020", @cookbook.date
+		# @cookbook.stubs(:today).returns("%m-%d-%Y")
+		Date.stubs(:today).returns(Date.new(2020,6,3))
+		assert_equal "06-03-2020", @cookbook.date
+
   end
 
   def test_cook_book_summary
-    skip
     ingredient1 = Ingredient.new({name: "Cheese", unit: "C", calories: 100})
     ingredient2 = Ingredient.new({name: "Macaroni", unit: "oz", calories: 30})
     ingredient3 = Ingredient.new({name: "Ground Beef", unit: "oz", calories: 100})
-    ingredient4 = Ingredient.new({name: "Bun", unit: "g", calories: 75})
+    ingredient4 = Ingredient.new({name: "Bun", unit: "g", calories: 1 })
     cookbook = CookBook.new
     recipe1 = Recipe.new("Mac and Cheese")
-    recipe2 = Recipe.new("Cheese Burger")
+    recipe2 = Recipe.new("Burger")
     recipe1.add_ingredient(ingredient1, 2)
     recipe1.add_ingredient(ingredient2, 8)
     recipe2.add_ingredient(ingredient3, 4)
-    recipe2.add_ingredient(ingredient4, 1)
+    recipe2.add_ingredient(ingredient4, 100)
     cookbook.add_recipe(recipe1)
     cookbook.add_recipe(recipe2)
     expected = [{
